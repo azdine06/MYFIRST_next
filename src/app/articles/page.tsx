@@ -53,7 +53,7 @@ const ArticlesPage = () => {
     })
   );
 
-  const handleDragEnd = (event) => {
+  const handleDragEnd = (event : any) => {
     const { active, over } = event;
 
     if (active.id === over.id) return;
@@ -127,7 +127,7 @@ const ArticlesPage = () => {
   );
 };
 
-const DraggableArticleItem = ({ article }) => {
+const DraggableArticleItem = ({ article }: any) => {
   const { id, title } = article;
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id });
 

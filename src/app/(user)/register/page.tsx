@@ -1,12 +1,13 @@
 // components/RegisterForm.js
 
+import Link from 'next/link';
 import React from 'react';
 
 const RegisterForm = () => {
   return (
     <form className="bg-white p-6 rounded-lg shadow-md w-full max-w-lg mx-auto border border-gray-300">
       <p className="text-2xl font-bold mb-4">Register</p>
-      <p className="mb-6 text-gray-600">Signup now and get full access to our app.</p>
+      <p className="mb-6 text-gray-600">Sigunp now and get full access to our app.</p>
       <div className="flex gap-4 mb-4">
         <label className="flex-1">
           <input
@@ -59,7 +60,7 @@ const RegisterForm = () => {
       </button>
 
       <p className="mt-4 text-gray-600">
-        Already have an account? <a href="/login" className="text-blue-500 hover:underline">Signin</a>
+        Already have an account? <Link href="/login" className="text-blue-500 hover:underline">sign in</Link>
       </p>
     </form>
   );

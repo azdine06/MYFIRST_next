@@ -34,21 +34,31 @@
 //     </RadioGroup>
 //   )
 // }
-import React from 'react'
+import React, { Suspense } from 'react'
 import Image from 'next/image'
 import Masque from '../../../public/darck-mode.jpg' 
 import { DialogDemo } from '@/components/dialogue/DialogDemo'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Skeleton } from "@/components/ui/skeleton"
+import Link from 'next/link'
 
 export default function Azdine() {
-  const[]
+  
   return (
     <div>
-      <p>Azdine page</p>
-      <Image src={Masque} alt='darck' width={500} height={500} />
-      <DialogDemo/>
+     <div className="flex items-center space-x-4 bg-red-600">
+      <Skeleton className="h-12 w-12 rounded-full" />
+      <div className="space-y-2">
+        <Skeleton className="h-4 w-[250px]" />
+        <Skeleton className="h-4 w-[200px]" />
+      </div>
+    </div>
 
+      {/* <Link to="/admin">admine page</Link> */}
+      <Image src={Masque} alt="darck" width={500} height={500}  className="hover:flex-1"/>
+      <DialogDemo/>
+<Suspense fallback={<div>Loading...</div>}>
+  
+</Suspense>
     </div>
   )
 }
-

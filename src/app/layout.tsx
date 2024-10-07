@@ -64,12 +64,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <div className="w-full border-b-4 border-slate-600 bg-gray-200">
+        <div className="w-full border-b-4 border-slate-600 bg-gray-200 bottom-0">
           <Navbar isAdmin={false} />
         </div>
         {/* <Header /> */}
         <main>{children}</main>
-        <Footer />
+       <div className="flex-shrink-0  w-full b-0 flex-grow"><Footer /></div> 
       </body>
     </html>
   );
