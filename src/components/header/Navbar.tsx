@@ -1,77 +1,106 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 50);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const toggleMenu = () => setIsOpen(!isOpen);
 
   return (
-    <nav className="bg-white shadow-md">
+    <nav className="bg-gradient-to-r from-gray-100 to-gray-50 shadow-lg">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          <div className="flex items-center">
-            <Link href="/" className="flex-shrink-0">
-              <span className="text-2xl font-bold text-primary">Logo</span>
-            </Link>
-            <div className="hidden md:block">
-              <div className="ml-10 flex items-baseline space-x-4">
-                <NavLink href="/">Home</NavLink>
-                <NavLink href="/about">About</NavLink>
-                <NavLink href="/articles">Articles</NavLink>
-                <NavLink href="/product">Products</NavLink>
-                <NavLink href="/admin">Admin Dashboard</NavLink>
-              </div>
+          {/* Logo */}
+          <Link 
+            href="/" 
+            className="flex items-center space-x-2 group"
+            onClick={() => setIsOpen(false)}
+          >
+            <span className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+              MyBrand
+            </span>
+          </Link>
+
+          {/* Desktop Navigation */}
+          <div className="hidden md:flex items-center space-x-8">
+            <div className="flex items-baseline space-x-6">
+              <NavLink href="/">Home</NavLink>
+              <NavLink href="/about">About</NavLink>
+              <NavLink href="/articles">Articles</NavLink>
+              <NavLink href="/product">Products</NavLink>
+              <NavLink href="/admin">Admin</NavLink>
             </div>
-          </div>
-          <div className="hidden md:block">
-            <div className="ml-4 flex items-center md:ml-6">
+            
+            <div className="ml-6 flex items-center space-x-4">
               <Link href="/login">
-                <Button variant="outline" className="mr-2">
+                <Button 
+                  variant="outline" 
+                  className="border-2 border-gray-200 hover:border-transparent hover:bg-gradient-to-r from-blue-500/10 to-purple-500/10 hover:shadow-md transition-all"
+                >
                   Login
                 </Button>
               </Link>
               <Link href="/register">
-                <Button>Register</Button>
+                <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white hover:shadow-lg transition-all hover:scale-[1.02]">
+                  Register
+                </Button>
               </Link>
             </div>
           </div>
+
+          {/* Mobile Menu Button */}
           <div className="md:hidden">
             <button
               onClick={toggleMenu}
-              className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-primary hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary"
-              aria-expanded="false"
+              className="p-2 rounded-lg text-gray-600 hover:bg-gray-100 transition-colors"
+              aria-expanded={isOpen}
             >
-              <span className="sr-only">Open main menu</span>
+              <span className="sr-only">{isOpen ? "Close menu" : "Open menu"}</span>
               {isOpen ? (
-                <X className="block h-6 w-6" aria-hidden="true" />
+                <X className="h-6 w-6" aria-hidden="true" />
               ) : (
-                <Menu className="block h-6 w-6" aria-hidden="true" />
+                <Menu className="h-6 w-6" aria-hidden="true" />
               )}
             </button>
           </div>
         </div>
       </div>
 
+      {/* Mobile Menu */}
       {isOpen && (
-        <div className="md:hidden">
-          <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-            <MobileNavLink href="/">Home</MobileNavLink>
-            <MobileNavLink href="/about">About</MobileNavLink>
-            <MobileNavLink href="/articles">Articles</MobileNavLink>
-            <MobileNavLink href="/products">Products</MobileNavLink>
-            <MobileNavLink href="/admin">Admin Dashboard</MobileNavLink>
-          </div>
-          <div className="pt-4 pb-3 border-t border-gray-200">
-            <div className="px-2 space-y-1">
-              <Button variant="outline" className="w-full mb-2">
-                Login
-              </Button>
-              <Button className="w-full">Register</Button>
+        <div className="md:hidden absolute w-full bg-white/95 backdrop-blur-lg shadow-xl">
+          <div className="px-4 pt-2 pb-8 space-y-2 sm:px-6">
+            <MobileNavLink href="/" onClick={toggleMenu}>Home</MobileNavLink>
+            <MobileNavLink href="/about" onClick={toggleMenu}>About</MobileNavLink>
+            <MobileNavLink href="/articles" onClick={toggleMenu}>Articles</MobileNavLink>
+            <MobileNavLink href="/product" onClick={toggleMenu}>Products</MobileNavLink>
+            <MobileNavLink href="/admin" onClick={toggleMenu}>Admin</MobileNavLink>
+            
+            <div className="pt-8 space-y-4">
+              <Link href="/login" className="block" onClick={toggleMenu}>
+                <Button variant="outline" className="w-full border-2 border-gray-200">
+                  Login
+                </Button>
+              </Link>
+              <Link href="/register" className="block" onClick={toggleMenu}>
+                <Button className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white">
+                  Register
+                </Button>
+              </Link>
             </div>
           </div>
         </div>
@@ -90,9 +119,10 @@ function NavLink({
   return (
     <Link
       href={href}
-      className="text-gray-600 hover:text-primary px-3 py-2 rounded-md text-sm font-medium"
+      className="relative text-gray-600 hover:text-gray-900 px-3 py-2 rounded-lg font-medium transition-colors group"
     >
       {children}
+      <span className="absolute bottom-1 left-1/2 w-0 h-[2px] bg-blue-500 transition-all duration-300 group-hover:w-4/5 group-hover:left-[10%]"></span>
     </Link>
   );
 }
@@ -100,14 +130,17 @@ function NavLink({
 function MobileNavLink({
   href,
   children,
+  onClick,
 }: {
   href: string;
   children: React.ReactNode;
+  onClick?: () => void;
 }) {
   return (
     <Link
       href={href}
-      className="text-gray-600 hover:text-primary block px-3 py-2 rounded-md text-base font-medium"
+      onClick={onClick}
+      className="block px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-xl transition-colors text-lg font-medium"
     >
       {children}
     </Link>

@@ -1,31 +1,45 @@
 // [] cela veux dire que ce fild est dynamique
-import { Article } from "@/utils/types";
+// [] cela veux dire que ce champ est dynamique
+import { Article } from "@/lib/utils/types";
 import React from "react";
-//props pour recuperé le id
+
 interface SingleArticlePgeProps {
   params: { id: string };
 }
+
 const SingleArticlePge = async ({ params }: SingleArticlePgeProps) => {
   const response = await fetch(
     `https://jsonplaceholder.typicode.com/posts/${params.id}`
   );
+
   if (!response.ok) {
-    throw new Error("Failed to fech article");
+    throw new Error("Failed to fetch article");
   }
-  // if data not existe afffiche ce message d'erreur 
+
   const article: Article = await response.json();
+  console.log(params.id);
   return (
-    <section className="fix-height container m-auto w-full px-5 pt-8 md:w-3/4">
-      <div className="bg-white p-7 rounded-lg">
-        <h1 className="text-gray-800 text-xl mt-5">{article.title}</h1>
-        <div className="text-gray-400">1/1/2024</div>
-        <p>{article.body}</p>
+    <section className="min-h-screen container mx-auto px-5 py-12 md:w-2/3">
+      <div className="bg-white shadow-lg p-8 rounded-lg border border-gray-200">
+        {/* Article Title */}
+        <h1 className="text-3xl font-bold text-gray-800 mb-4">
+          {article.title}
+        </h1>
+
+        {/* Article Metadata */}
+        <div className="text-sm text-gray-500 mb-6">
+          Published on <span className="font-medium">1 January 2024</span>
+        </div>
+
+        {/* Article Content */}
+        <p className="text-gray-700 leading-relaxed">{article.body}</p>
       </div>
     </section>
   );
 };
 
 export default SingleArticlePge;
+
 //pour écrire qerystring   ecrire aprés URL ?pageNambere=20
 //pageNambere veux dir key et 20 value
 //sauf dans components on peus recupré le props 8-11

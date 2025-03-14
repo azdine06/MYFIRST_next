@@ -5,7 +5,7 @@ import { CiSearch } from "react-icons/ci";
 import { DndContext, KeyboardSensor, PointerSensor, useSensor, useSensors, closestCenter } from "@dnd-kit/core";
 import { arrayMove, sortableKeyboardCoordinates } from "@dnd-kit/sortable";
 import { useSortable } from "@dnd-kit/sortable";
-import { Article } from "@/utils/types";
+import { Article } from "@/lib/utils/types";
 import ArticleItem from "@/components/articles/ArticleItem";
 import {
   Pagination,
@@ -18,13 +18,13 @@ import {
 
 const ITEMS_PER_PAGE = 9;
 
-const fetcher = (url) => fetch(url).then((res) => res.json());
+const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 const ArticlesPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const { data: articlesData, error } = useSWR("https://jsonplaceholder.typicode.com/posts", fetcher);
-  const [articles, setArticles] = useState([]);
+  const [articles, setArticles] = useState<Article[]>([]);
 
   useEffect(() => {
     if (articlesData) {
@@ -32,7 +32,7 @@ const ArticlesPage = () => {
     }
   }, [articlesData]);
 
-  const handleSearchChange = (e) => {
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
     setCurrentPage(1);
   };
@@ -53,7 +53,7 @@ const ArticlesPage = () => {
     })
   );
 
-  const handleDragEnd = (event : any) => {
+  const handleDragEnd = (event: any) => {
     const { active, over } = event;
 
     if (active.id === over.id) return;
@@ -66,24 +66,27 @@ const ArticlesPage = () => {
     });
   };
 
-  if (error) return <div>Failed to load</div>;
-  if (!articlesData) return <div>Loading...</div>;
+  if (error) return <div className="text-red-500 text-center">Failed to load data. Please try again later.</div>;
+  if (!articlesData) return <div className="text-gray-500 text-center">Loading articles...</div>;
 
   return (
-    <section className="container m-auto px-5">
-      <div className="flex w-full p-4 justify-between">
-        <div className="flex w-80 items-center mb-4 border border-gray-300 rounded p-2">
-          <CiSearch className="text-gray-500 mr-2" size={24} />
+    <section className="container mx-auto px-5 py-10">
+      {/* Search and Pagination */}
+      <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-8">
+        {/* Search Bar */}
+        <div className="flex items-center w-full md:w-1/2 bg-gray-100 border border-gray-300 rounded-lg p-3 shadow-sm">
+          <CiSearch className="text-gray-500 mr-3" size={24} />
           <input
             type="text"
-            placeholder="Search by title..."
+            placeholder="Search articles by title..."
             value={searchQuery}
             onChange={handleSearchChange}
-            className="flex-1 p-2 outline-none"
+            className="flex-1 bg-transparent text-gray-700 placeholder-gray-500 outline-none"
           />
         </div>
-      
-        <div className="flex items-center">
+
+        {/* Pagination */}
+        <div className="mt-6 md:mt-0">
           <Pagination>
             <PaginationContent>
               <PaginationItem>
@@ -116,8 +119,9 @@ const ArticlesPage = () => {
         </div>
       </div>
 
+      {/* Articles Grid with Drag-and-Drop */}
       <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-        <div className="grid gap-x-8 gap-y-4 grid-cols-3">
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {currentArticles.map((article) => (
             <DraggableArticleItem key={article.id} article={article} />
           ))}
@@ -127,8 +131,8 @@ const ArticlesPage = () => {
   );
 };
 
-const DraggableArticleItem = ({ article }: any) => {
-  const { id, title } = article;
+const DraggableArticleItem = ({ article }: { article: Article }) => {
+  const { id } = article;
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id });
 
   const style = {
@@ -142,6 +146,7 @@ const DraggableArticleItem = ({ article }: any) => {
       style={style}
       {...attributes}
       {...listeners}
+      className="bg-white rounded-lg shadow-md p-4 border border-gray-200 hover:shadow-lg transition duration-200"
     >
       <ArticleItem article={article} />
     </div>

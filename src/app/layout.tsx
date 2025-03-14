@@ -38,18 +38,18 @@
 // // main
 
 
-
 import type { Metadata } from "next";
-import { Inter, Noto_Kufi_Arabic } from "next/font/google";
+import { Inter } from "next/font/google";
 import "./globals.css";
-// import Header from "@/components/header/Header";
 
 import Footer from "@/components/Footer";
 import Navbar from "@/components/header/Navbar";
+interface NavbarProps {
 
+  isAdmin: boolean;
+
+}
 const inter = Inter({ subsets: ["latin"] });
-
-// const kufiArabic = Noto_Kufi_Arabic({ subsets: ["arabic"], weight: ['300', '500'] });
 
 export const metadata: Metadata = {
   title: "Cloud Hosting AZ",
@@ -63,14 +63,23 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>
-        <div className="w-full border-b-4 border-slate-600 bg-gray-200 bottom-0">
+      <head>
+        {/* Vous pouvez ajouter d'autres balises ici si nécessaire */}
+      </head>
+      <body className={`${inter.className} flex flex-col min-h-screen`}>
+        {/* Navbar */}
+        <div className="w-full border-b-4 border-slate-600 bg-gray-200">
           <Navbar isAdmin={false} />
         </div>
-        {/* <Header /> */}
-        <main>{children}</main>
-       <div className="flex-shrink-0  w-full b-0 flex-grow"><Footer /></div> 
+        {/* Main Content */}
+        <main className="flex-1">{children}</main>
+
+        {/* Footer */}
+        <footer className="w-full bg-gray-200">
+          <Footer />
+        </footer>
       </body>
     </html>
   );
 }
+
